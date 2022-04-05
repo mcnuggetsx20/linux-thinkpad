@@ -4,7 +4,6 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from subprocess import check_output, Popen
 from funx import *
-from lib import *
 
 @hook.subscribe.client_new
 def func(new_window):
@@ -26,15 +25,17 @@ gray   = '#D0D0D0'
 red    = '#C61717'
 dred   = '#6b1015'
 solar  = '#fdf6e3'   
+gray_orange='#E6D69B'
 
 mod = "mod1"
 sup = "mod4"
 terminal = "alacritty"
+dmenu = "dmenu_run -sb '" + gray_orange + "' -nf '" + gray_orange + "' -sf '" + red + "'"
 
 keys = [
     #My stuff
     Key([sup], 'b', lazy.spawn('brave')),
-    Key([mod], 'p', lazy.spawn('dmenu_run')),
+    Key([mod], 'p', lazy.spawn(dmenu)),
     Key([sup], 'f', lazy.spawn('pcmanfm')),
     Key([sup], 'm', lazy.spawn('urxvt -e htop')),
     Key([sup], 't', lazy.spawn('sh qpanel')),
@@ -103,8 +104,18 @@ keys = [
 ]
 
 all_layouts = [
-    layout.MonadTall(border_focus='#F0AF16', new_client_position='before_current', change_ratio=0.025),
-    layout.Max(border_width=0, border_focus='#000000', margin=8),
+    layout.MonadTall(
+        border_focus=dgray, 
+        new_client_position='before_current', 
+        change_ratio=0.025,
+        margin=12,
+    ),
+
+    layout.Max(
+        border_width=0, 
+        border_focus='#000000', 
+        margin=8
+    ),
 ]
 
 float_layout = layout.Floating(
@@ -118,31 +129,57 @@ float_layout = layout.Floating(
 )
 
 groups = [
-        Group('1', layouts=all_layouts),
-        Group('2', layouts=all_layouts),
-        Group('3', layouts=all_layouts),
-        Group('4', layouts=all_layouts),
-        Group('5', layouts=[float_layout]),
+    Group(
+        name='1', 
+        position=1, 
+        layouts=all_layouts
+    ),
+
+    Group(
+        name='2', 
+        position=2, 
+        layouts=all_layouts
+    ),
+
+    Group(
+        name='3',
+        position=3, 
+        layouts=all_layouts
+    ),
+
+    Group(
+        name='4',
+        position=4, 
+        layouts=all_layouts, 
+        matches = [
+            Match(wm_class='discord')
         ]
+    ),
+        
+    Group(
+        name='5', 
+        position=5, 
+        layouts=all_layouts, 
+        matches = [
+            Match(wm_class='teams')
+        ]
+    ),
+]
 
 for i in groups:
     keys.extend([
         # mod1 + letter of group = switch to group
-        Key([mod], i.name, lazy.group[i.name].toscreen(),
-            desc="Switch to group {}".format(i.name)),
-
+        Key([mod], str(i.position), lazy.group[i.name].toscreen()),
         # mod1 + shift + letter of group = switch to & move focused window to group
-        Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-            desc="Switch to & move focused window to group {}".format(i.name)),
+        Key([mod, "shift"], str(i.position), lazy.window.togroup(i.name)),
         # Or, use below if you prefer not to switch to that group.
         # # mod1 + shift + letter of group = move focused window to group
         # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
         #     desc="move focused window to group {}".format(i.name)),
     ])
 
-
 widget_defaults = dict(
-    font='Fixedsys', 
+    font='JetBrains Mono Bold', 
     fontsize=14,
     padding=0,
     #foreground='#000000',
@@ -153,112 +190,186 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
-        wallpaper='~/Pictures/wallpaper/orange_comma.jpg',
+        wallpaper='~/Pictures/wallpaper/solar_comma_light.png',
         wallpaper_mode='fill',
-        top=bar.Bar(widgets=[
-            widget.Clock(
-                foreground=black,
-                background=violet,
-                format=" %A ",
-            ),
+        top=bar.Bar(
+            background='#29271c',
+            widgets=[
+                widget.Image(
+                    background=gray_orange, 
+                    filename = '/home/mcnuggetsx20/.config/qtile/arch_black.png',
+                ),
 
-            widget.Clock(
-                foreground=black, 
-                background=orange,
-                format=" %d.%m.'%y ",
-            ),
+                widget.TextBox(
+                    text='A',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
 
-            widget.Clock(
-                foreground=black,
-                background=dblue,
-                format=" %H:%M:%S ",
-                update_interval=1,
-            ),
+                widget.GroupBox(
+                    font='Roboto Mono',
+                    active=black,
+                    inactive=black,
+                    background=gray_orange,
+                    this_current_screen_border=black,
+                    this_screen_border=green,
+                    highlight_method='block',
+                    block_highlight_text_color=gray_orange,
 
-            widget.TextBox(
-                text=' ',
-                foreground=black,
-                background=white,
-            ),
+                ),
 
-            widget.CurrentLayout(
-                foreground=black,
-                background=white,
-            ),
+                widget.TextBox(
+                    text='BA',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
 
+                widget.GenPollText(
+                    name='disk',
+                    foreground=black,
+                    background=gray_orange,
+                    func=space_check, 
+                    update_interval=4,
+                ),
 
-            widget.TextBox(
-                text=' ',
-                foreground=black,
-                background=white,
-            ),
+                widget.TextBox(
+                    text='B',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
 
-            widget.Spacer(
-                length=3,
-            ),
+                widget.Spacer(
+                    length=3,
+                ),
 
-            widget.TaskList(
-                parse_text=remtext, 
-                borderwidth=0, 
-                margin_x=0, 
-                margin_y=0, 
-                icon_size=18, 
-                txt_floating=''
-            ),
+                widget.TaskList(
+                    parse_text=remtext, 
+                    borderwidth=0, 
+                    margin_x=0, 
+                    margin_y=0, 
+                    icon_size=18, 
+                    txt_floating=''
+                ),
 
-            widget.Spacer(
-                length=bar.STRETCH,
-            ),
+                widget.Spacer(
+                    length=bar.STRETCH,
+                ),
 
-            widget.Systray(),
+                widget.Systray(
+                ),
 
-            widget.GenPollText(
-                foreground=black,
-                background=white,
-                func=space_check, 
-                update_interval=4,
-            ),
+                widget.TextBox(
+                    text = 'A',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
 
-            widget.CPU(
-                foreground=black, 
-                background=violet, 
-                format=' CPU {load_percent}% ', 
-                update_interval=2.0,
-            ),
+                widget.TextBox(
+                    text = ' ',
+                    name = 'AudioDeviceIndicator1',
+                    foreground = black,
+                    background = gray_orange,
+                    font='JetBrains Mono',
+                ),
 
-            widget.TextBox(
-                name='volumebox1',
-                text=' ' + vol1() + '% ',
-                foreground=black,
-                background=ored,
-            ),
+                widget.TextBox(
+                    name = 'vol_level1',
+                    text=vol1()[0],
+                    foreground=red,
+                    background=gray_orange,
+                    font = 'Ubuntu Bold',
+                    fontsize=12,
+                ),
 
-            widget.Battery(
-                foreground=black, 
-                background=lime,
-                format=' {char}{percent:2.0%} {hour:d}:{min:02d} ', 
-                charge_char='',
-                discharge_char='',
-                update_interval=2
-            ),
+                widget.TextBox(
+                    name = 'vol_rest1',
+                    text=vol2(),
+                    font = 'Ubuntu Bold',
+                    fontsize=12,
+                    func = vol2,
+                    foreground=black,
+                    background=gray_orange,
+                ),
 
-            widget.GroupBox(
-                active=black,
-                inactive=black,
-                #foreground=black,
-                background=orange,
-                this_current_screen_border=orange,
-                this_screen_border=orange,
-                highlight_method='block',
-                block_highlight_text_color=white,
+                widget.TextBox(
+                    text='(',
+                    foreground=black,
+                    background=gray_orange,
+                ),
 
-            ),
+                widget.TextBox(
+                    name='vol_number1',
+                    text = vol1()[1]+'%',
+                    foreground=black,
+                    background=gray_orange,
+                ),
 
-            widget.Image(
-                background=orange, 
-                filename = '/home/mcnuggetsx20/.config/qtile/arch_black.png',
-            ),
-            
+                widget.TextBox(
+                    text=')',
+                    foreground=black,
+                    background=gray_orange,
+                ),
+                widget.TextBox(
+                    text = 'BA',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+                widget.TextBox(
+                    text=' ',
+                    font = 'JetBrains Mono',
+                    foreground=black,
+                    background=gray_orange,
+                ),
+
+                widget.Battery(
+                    foreground=black, 
+                    background=gray_orange,
+                    format='{char}{percent:2.0%} {hour:d}:{min:02d}', 
+                    charge_char='',
+                    discharge_char='',
+                    update_interval=2
+                ),
+
+                widget.TextBox(
+                    text = 'BA',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+                widget.Clock(
+                    foreground=black,
+                    background=gray_orange,
+                    format="%H:%M:%S",
+                    update_interval=1,
+                ),
+
+                widget.TextBox(
+                    text = 'BA',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+                widget.Clock(
+                    foreground=black,
+                    background=gray_orange,
+                    format="%a: %d.%m.'%y",
+                ),
+
+                widget.TextBox(
+                    text = 'B',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+                
 
         ],
         size=18)
@@ -288,3 +399,4 @@ reconfigure_screens = True
 auto_minimize = False
 
 wmname = "QTile"
+
