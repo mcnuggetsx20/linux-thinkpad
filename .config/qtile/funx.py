@@ -10,10 +10,10 @@ def volumemute(qtile):
     mt = check_output('pulsemixer --get-mute', shell=True, encoding='utf-8')[:-1]
     Popen('pulsemixer --toggle-mute', shell=True)
     if mt=='0':
-        qtile.widgets_map['volumebox1'].update(' M ')
+        qtile.widgets_map['vol_number1'].update(' M ')
         return
     a=vol1()
-    qtile.widgets_map['volumebox1'].update(' ' + a + '% ')
+    qtile.widgets_map['vol_number1'].update(' ' + a + '% ')
 
 def vol1():
     com = check_output('pamixer --get-volume', shell=True, encoding='utf-8').split()

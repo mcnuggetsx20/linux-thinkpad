@@ -1,14 +1,14 @@
 colorscheme desert
 
 let g:currentmode={
-       \ 'n'  : 'NORMAL  ',
-       \ 'v'  : 'VISUAL  ',
-       \ 'V'  : 'V·Line  ',
-       \ "\<C-V>" : 'V·Block  ',
-       \ 'i'  : 'INSERT  ',
-       \ 'R'  : 'R  ',
-       \ 'Rv' : 'V·Replace  ',
-       \ 'c'  : 'Command  ',
+       \ 'n'  : 'NORMAL ',
+       \ 'v'  : 'VISUAL ',
+       \ 'V'  : 'V·Line ',
+       \ "\<C-V>" : 'V·Block ',
+       \ 'i'  : 'INSERT ',
+       \ 'R'  : 'R ',
+       \ 'Rv' : 'V·Replace ',
+       \ 'c'  : 'Command ',
        \}
 
 set langmenu=en_US
@@ -28,6 +28,8 @@ inoremap { {}<Left>
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {{ {
 inoremap {} {}
+set backup
+set undofile
 
 set undodir=/home/mcnuggetsx20/Documents/vimfiles/undo
 set backupdir=/home/mcnuggetsx20/Documents/vimfiles/backup
@@ -42,10 +44,21 @@ set directory=/home/mcnuggetsx20/Documents/vimfiles/swp
 set belloff=all
 
 set laststatus=2
+
+set statusline+=%#keyword#
 set statusline+=\ %{(g:currentmode[mode()])}
-set statusline+=%F\ %=\ %L\ lines,
+
+set statusline+=%#statusline#
+set statusline+=\ %F\ %=\ 
+
+set statusline+=%#number#
+set statusline+=\ %L\ lines
+
+set statusline+=%#string#
 set statusline+=\ %{wordcount().words}\ words
 
+set statusline+=%#function#
+set statusline+=\ [NVIM]
 function! s:ExecuteInShell(command)
   let command = join(map(split(a:command), 'expand(v:val)'))
   let winnr = bufwinnr('^' . command . '$')
@@ -65,6 +78,7 @@ command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
 :autocmd BufNewFile *.cpp 0r /home/mcnuggetsx20/.config/ClassicTemplate.txt
 nnoremap <F5> :w <bar> !brave % & <cr> 
 nnoremap <F4> :w <bar> Shell python -B % <cr>
+command WW silent! :w !sudo tee % <CR>
 
 nnoremap x "_x
 vmap x "_d
@@ -92,8 +106,14 @@ call plug#begin()
 
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
+Plug 'ayu-theme/ayu-vim' " or other package manager
+Plug 'blueshirts/darcula'
 
 call plug#end()
+
+set termguicolors
+let ayucolor="dark"
+colorscheme ayu
 
 lua << EOF
     require('lspconfig').pyright.setup{
@@ -140,5 +160,3 @@ inoremap <silent><expr> <CR>      compe#confirm('<CR>')
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
-

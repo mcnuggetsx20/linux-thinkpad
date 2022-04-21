@@ -32,6 +32,10 @@ sup = "mod4"
 terminal = "alacritty"
 dmenu = "dmenu_run -sb '" + gray_orange + "' -nf '" + gray_orange + "' -sf '" + red + "'"
 
+def temp():
+    a = check_output("curl -s wttr.in/Wroclaw?format=1 | awk '{printf $2}'", shell=True, encoding='utf-8')
+    return ['N/A', a][int(bool(len(a)))]
+
 keys = [
     #My stuff
     Key([sup], 'b', lazy.spawn('brave')),
@@ -105,7 +109,8 @@ keys = [
 
 all_layouts = [
     layout.MonadTall(
-        border_focus=dgray, 
+        border_focus=violet, 
+        single_border_width=0,
         new_client_position='before_current', 
         change_ratio=0.025,
         margin=12,
@@ -182,8 +187,8 @@ widget_defaults = dict(
     font='JetBrains Mono Bold', 
     fontsize=14,
     padding=0,
-    #foreground='#000000',
-    #background=,
+    #foreground=black,
+    #background=gray_orange,
     inactive='#FFFFFF',
 )
 extension_defaults = widget_defaults.copy()
@@ -195,13 +200,8 @@ screens = [
         top=bar.Bar(
             background='#29271c',
             widgets=[
-                widget.Image(
-                    background=gray_orange, 
-                    filename = '/home/mcnuggetsx20/.config/qtile/arch_black.png',
-                ),
-
                 widget.TextBox(
-                    text='A',
+                    text='CA',
                     font='Bartek',
                     fontsize=31,
                     foreground=gray_orange,
@@ -226,12 +226,33 @@ screens = [
                     foreground=gray_orange,
                 ),
 
+                widget.TextBox(
+                    text=' ',
+                    font='JetBrains Mono',
+                    foreground=black,
+                    background = gray_orange,
+                ),
+
                 widget.GenPollText(
                     name='disk',
                     foreground=black,
                     background=gray_orange,
                     func=space_check, 
                     update_interval=4,
+                ),
+
+                widget.TextBox(
+                    text='BA',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
+
+                widget.TextBox(
+                    name = 'chicken_legs',
+                    text = '60kg',
+                    foreground=black,
+                    background=gray_orange,
                 ),
 
                 widget.TextBox(
@@ -332,7 +353,7 @@ screens = [
                     background=gray_orange,
                     format='{char}{percent:2.0%} {hour:d}:{min:02d}', 
                     charge_char='',
-                    discharge_char='',
+                    discharge_char='' ,
                     update_interval=2
                 ),
 
@@ -341,6 +362,13 @@ screens = [
                     font = 'Bartek',
                     fontsize= 31,
                     foreground = gray_orange,
+                ),
+
+                widget.TextBox(
+                    text = ' ',
+                    font = 'JetBrains Mono',
+                    foreground = black,
+                    background = gray_orange,
                 ),
 
                 widget.Clock(
@@ -357,10 +385,36 @@ screens = [
                     foreground = gray_orange,
                 ),
 
+                widget.TextBox(
+                    text = ' ',
+                    font = 'JetBrains Mono',
+                    foreground = black,
+                    background = gray_orange,
+                ),
+
                 widget.Clock(
                     foreground=black,
                     background=gray_orange,
                     format="%a: %d.%m.'%y",
+                ),
+
+                widget.TextBox(
+                    text = 'BA',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+                widget.TextBox(
+                    text=' ',
+                    font = 'JetBrains Mono',
+                    foreground = black,
+                    background = gray_orange,
+                ),
+                widget.GenPollText(
+                    func = temp,
+                    update_interval = 1000,
+                    foreground = black,
+                    background = gray_orange,
                 ),
 
                 widget.TextBox(
@@ -369,7 +423,6 @@ screens = [
                     fontsize= 31,
                     foreground = gray_orange,
                 ),
-                
 
         ],
         size=18)
