@@ -29,11 +29,11 @@ gray_orange='#E6D69B'
 
 mod = "mod1"
 sup = "mod4"
-terminal = "alacritty"
+terminal = "alacritty -e nvim -c term -c 'set ma' -c startinsert"
 dmenu = "dmenu_run -sb '" + gray_orange + "' -nf '" + gray_orange + "' -sf '" + red + "'"
 
 def temp():
-    a = check_output("curl -s wttr.in/Wroclaw?format=1 | awk '{printf $2}'", shell=True, encoding='utf-8')
+    a = check_output("curl -s wttr.in/Wojnów?format=1 | awk '{printf $2}'", shell=True, encoding='utf-8')
     return ['N/A', a][int(bool(len(a)))]
 
 keys = [
@@ -250,7 +250,7 @@ screens = [
 
                 widget.TextBox(
                     name = 'chicken_legs',
-                    text = '60kg',
+                    text = '65kg',
                     foreground=black,
                     background=gray_orange,
                 ),
@@ -279,8 +279,8 @@ screens = [
                     length=bar.STRETCH,
                 ),
 
-                widget.Systray(
-                ),
+                widget.Systray(),
+                widget.StatusNotifier(),
 
                 widget.TextBox(
                     text = 'A',

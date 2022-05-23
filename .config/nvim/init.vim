@@ -9,6 +9,7 @@ let g:currentmode={
        \ 'R'  : 'R ',
        \ 'Rv' : 'V·Replace ',
        \ 'c'  : 'Command ',
+       \ 't'  : 'TERMINAL ',
        \}
 
 set langmenu=en_US
@@ -75,6 +76,7 @@ endfunction
 command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
 
 
+autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
 :autocmd BufNewFile *.cpp 0r /home/mcnuggetsx20/.config/ClassicTemplate.txt
 nnoremap <F5> :w <bar> !brave % & <cr> 
 nnoremap <F4> :w <bar> Shell python -B % <cr>
@@ -85,6 +87,7 @@ vmap x "_d
 nnoremap dd "_dd
 nnoremap c "_c
 nnoremap cc "_cc
+tnoremap <Esc> <C-\><C-n>
 
 noremap s "_ddko
 
