@@ -26,6 +26,7 @@ alias term='vim ~/.config/alacritty/alacritty.yml'
 alias calc='python ~/documents/stuff/calculator.py'
 alias pb='python -B'
 alias cd='nvim_autocd'
+alias nv='internal_nvim'
 
 bind "set completion-ignore-case on"
 
@@ -41,6 +42,12 @@ function initx (){
 nvim_autocd(){
     builtin cd $1 
     if [ -v NVIM_LISTEN_ADDRESS ]; then
-        (nvim_autocd_python &) > /dev/null
+        (nvim_client_python -c &) > /dev/null
+    fi
+}
+
+internal_nvim(){
+    if [ -v NVIM_LISTEN_ADDRESS ]; then
+        (nvim_client_python -tn $1 &) > /dev/null
     fi
 }
