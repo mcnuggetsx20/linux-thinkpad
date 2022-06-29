@@ -14,7 +14,7 @@ PS1="[\W]${GREEN}$ ${RESET}"
 
 #set -o vi
 
-alias qconf='nvim ~/.config/qtile/config.py'
+alias qconf='nv ~/.config/qtile/config.py'
 alias l='ls -lah'
 alias pacinstall='sudo pacman -S'
 alias pacclear='sudo pacman -Scc'
@@ -41,13 +41,13 @@ function initx (){
 
 nvim_autocd(){
     builtin cd $1 
-    if [ -v NVIM_LISTEN_ADDRESS ]; then
+    if [ -v NVIM ]; then
         (nvim_client_python -c &) > /dev/null
     fi
 }
 
 internal_nvim(){
-    if [ -v NVIM_LISTEN_ADDRESS ]; then
+    if [ -v NVIM ]; then
         (nvim_client_python -tn $1 &) > /dev/null
     fi
 }

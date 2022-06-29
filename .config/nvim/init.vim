@@ -31,6 +31,7 @@ inoremap {{ {
 inoremap {} {}
 set backup
 set undofile
+set ignorecase
 
 set undodir=/home/mcnuggetsx20/Documents/vimfiles/undo
 set backupdir=/home/mcnuggetsx20/Documents/vimfiles/backup
@@ -111,12 +112,14 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-compe'
 Plug 'ayu-theme/ayu-vim' " or other package manager
 Plug 'blueshirts/darcula'
+Plug 'lifepillar/vim-solarized8'
 
 call plug#end()
 
 set termguicolors
-let ayucolor="dark"
+let ayucolor="light"
 colorscheme ayu
+colorscheme solarized8_high
 
 lua << EOF
     require('lspconfig').pyright.setup{

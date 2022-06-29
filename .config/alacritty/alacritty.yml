@@ -16,10 +16,10 @@ font:
     style: Bold Italic
 
   offset:
-    x: 0
+    x: -1
     y: 2
 
-  size: 11
+  size: 8.5 
 key_bindings:
   - {key: Equals, mods: Control, action: IncreaseFontSize}
   - {key: Minus, mods: Control, action: DecreaseFontSize}

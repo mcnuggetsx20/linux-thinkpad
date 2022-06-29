@@ -7,6 +7,9 @@ from funx import *
 
 @hook.subscribe.client_new
 def func(new_window):
+    if new_window.name=='Straw':
+        #Popen('echo essa > ~/temp', shell=True)
+        new_window.cmd_toggle_floating()
     if new_window.name=='QPanel':
         new_window.cmd_static(screen=0)
 
@@ -42,8 +45,7 @@ keys = [
     Key([mod], 'p', lazy.spawn(dmenu)),
     Key([sup], 'f', lazy.spawn('pcmanfm')),
     Key([sup], 'm', lazy.spawn('urxvt -e htop')),
-    Key([sup], 't', lazy.spawn('sh qpanel')),
-    Key([sup], 'k', lazy.spawn('pkill -f qpanel')),
+    Key([sup], 'bracketleft', lazy.spawn('Straw')),
     Key([], 'XF86AudioRaiseVolume', lazy.function(volumechange(True))),
     Key([], 'XF86AudioLowerVolume', lazy.function(volumechange(False))),
     Key([], 'XF86AudioMute', lazy.function(volumemute)),
@@ -127,7 +129,8 @@ float_layout = layout.Floating(
     border_width=0,
     border_focus='#000000',
     float_rules=[
-        Match(title='QNetwork'),
+        *layout.Floating.default_float_rules,
+        Match(wm_class = 'Straw'),
         Match(wm_class = 'feh'),
         Match(wm_class = 'python -B main.py'),
     ]
@@ -164,7 +167,7 @@ groups = [
     Group(
         name='5', 
         position=5, 
-        layouts=all_layouts, 
+        layouts=[float_layout], 
         matches = [
             Match(wm_class='teams')
         ]
