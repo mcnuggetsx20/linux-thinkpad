@@ -15,7 +15,7 @@ PS1="[\W]${GREEN}$ ${RESET}"
 #set -o vi
 
 alias qconf='nv ~/.config/qtile/config.py'
-alias l='ls -lah'
+alias l='exa --group-directories-first --icons -lagBh'
 alias pacinstall='sudo pacman -S'
 alias pacclear='sudo pacman -Scc'
 alias pacremove='sudo pacman -Rns'
@@ -23,7 +23,7 @@ alias pacupgrade='sudo pacman -Syyu'
 alias pacrefresh='sudo pacman -Syy'
 alias oi='cd ~/documents/programming/oi_2021/'
 alias term='vim ~/.config/alacritty/alacritty.yml'
-alias calc='python ~/documents/stuff/calculator.py'
+alias calc='python ~/Documents/stuff/calculator.py'
 alias pb='python -B'
 alias cd='nvim_autocd'
 alias nv='internal_nvim'

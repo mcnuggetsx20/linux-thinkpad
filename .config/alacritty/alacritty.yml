@@ -1,25 +1,25 @@
 font:
   normal:
-    family: Roboto Mono
+    family: White Rabbit
     style: Regular
 
   bold:
-    family: Roboto Mono
+    family: White Rabbit
     style: Bold
 
   italic:
-    family: Roboto Mono
+    family: White Rabbit
     style: Italic
 
   bold_italic:
-    family: Roboto Mono
+    family: White Rabbit
     style: Bold Italic
 
   offset:
-    x: -1
-    y: 2
+    x: 0
+    y: 5
 
-  size: 8.5 
+  size: 11
 key_bindings:
   - {key: Equals, mods: Control, action: IncreaseFontSize}
   - {key: Minus, mods: Control, action: DecreaseFontSize}

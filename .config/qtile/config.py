@@ -4,6 +4,12 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from subprocess import check_output, Popen
 from funx import *
+import os
+
+@hook.subscribe.startup_once
+def autostart():
+    home = os.path.expanduser('~')
+    call([home + '/.config/qtile/autostart.sh'])
 
 @hook.subscribe.client_new
 def func(new_window):
