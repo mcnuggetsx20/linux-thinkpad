@@ -1,23 +1,10 @@
-from libqtile import bar, layout, widget
-from libqtile import hook
+from libqtile import bar, layout, widget, hook
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
-from subprocess import check_output, Popen
+from subprocess import check_output, Popen, call
 from funx import *
 import os
 
-@hook.subscribe.startup_once
-def autostart():
-    home = os.path.expanduser('~')
-    call([home + '/.config/qtile/autostart.sh'])
-
-@hook.subscribe.client_new
-def func(new_window):
-    if new_window.name=='Straw':
-        #Popen('echo essa > ~/temp', shell=True)
-        new_window.cmd_toggle_floating()
-    if new_window.name=='QPanel':
-        new_window.cmd_static(screen=0)
 
 orange = '#F0Af16'
 ored   = '#F77B53'
@@ -40,6 +27,35 @@ mod = "mod1"
 sup = "mod4"
 terminal = "alacritty -e nvim -c term -c 'set ma' -c startinsert"
 dmenu = "dmenu_run -sb '" + gray_orange + "' -nf '" + gray_orange + "' -sf '" + red + "'"
+iconPath = '~/.config/qtile/icons/'
+
+@hook.subscribe.startup_once
+def autostart():
+    home = os.path.expanduser('~')
+    call([home + '/.config/qtile/autostart.sh'])
+
+@hook.subscribe.client_new
+def func(new_window):
+    if new_window.name=='Straw':
+        #Popen('echo essa > ~/temp', shell=True)
+        new_window.cmd_toggle_floating()
+    elif new_window.name=='QPanel':
+        new_window.cmd_static(screen=0)
+
+    elif new_window.name == 'weatherReport':
+        new_window.cmd_toggle_floating()
+        new_window.cmd_set_position(100, 100)
+
+        new_window.cmd_static(screen=0)
+
+    _id = str(new_window.info()['id'])
+    #Popen('echo ' + str(a) + ' > ~/temp', shell=True)
+    Popen('getxicon -w ' + _id + ' ' + iconPath + _id, shell=True)
+
+@hook.subscribe.client_killed
+def killed(zombie):
+    _id = str(zombie.info()['id'])
+    Popen('rm ' + iconPath + _id + '*', shell=True)
 
 def temp():
     a = check_output("curl -s wttr.in/Wojnów?format=1 | awk '{printf $2}'", shell=True, encoding='utf-8')

@@ -17,41 +17,10 @@ font:
 
   offset:
     x: 0
-    y: 5
+    y: 2
 
   size: 11
 key_bindings:
   - {key: Equals, mods: Control, action: IncreaseFontSize}
   - {key: Minus, mods: Control, action: DecreaseFontSize}
-
-colors:
-  primary:
-    background: '#000000' # base3
-    foreground: '#C5B381' # base00
-
-  cursor:
-    text:   '#fdf6e3' # base3
-    cursor: '#46DA14' # base00
-
-  normal:
-    black:   '#312D2D' # base2
-    red:     '#E50400' # red
-    green:   '#46DA14' # green
-    yellow:  '#EFAD08' # yellow
-    blue:    '#1D72AE' # blue
-    magenta: '#c678dd' # magenta
-    cyan:    '#F0AF16' # cyan
-    white:   '#FDF2CF' # base02
-
-  bright:
-    black:   '#5b6268' # base03
-    red:     '#da8548' # orange
-    green:   '#4db5bd' # base01
-    yellow:  '#ecbe7b' # base00
-    blue:    '#D88A00' # base0
-    magenta: '#a9a1e1' # violet
-    cyan:    '#28E8DD' # base1
-    white:   '#dfdfdf' # base3
-window:
-    opacity: 0.8
 

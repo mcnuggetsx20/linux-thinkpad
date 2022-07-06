@@ -1,4 +1,4 @@
 #!/bin/bash
 
 picom &
-redshift -O 4300
+redshift -O 4300;
