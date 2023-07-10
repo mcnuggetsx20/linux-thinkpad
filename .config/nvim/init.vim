@@ -43,8 +43,6 @@ set directory=/home/mcnuggetsx20/Documents/vimfiles/swp
 "set guioptions -=T
 "set guioptions-=r
 
-:lcd %:p:h
-
 set belloff=all
 
 set laststatus=2
@@ -88,14 +86,12 @@ fun! OpenMultipleTabs(pattern_list)
     endfor
 endfun
 
-command! -bar -bang -nargs=+ -complete=file Tabsnew call OpenMultipleTabs([<f-args>])
-
-
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
 :autocmd BufNewFile *.cpp 0r /home/mcnuggetsx20/.config/ClassicTemplate.txt
 nnoremap <F5> :w <bar> !brave % & <cr> 
 nnoremap <F4> :w <bar> Shell python -B % <cr>
 command WW silent! :w !sudo tee %
+autocmd BufEnter * silent! lcd %:p:h
 
 nnoremap x "_x
 vmap x "_d
