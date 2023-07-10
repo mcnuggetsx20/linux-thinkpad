@@ -1,10 +1,10 @@
-from libqtile import bar, layout, widget, hook
+from libqtile import bar, layout, widget, hook, qtile
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from subprocess import check_output, Popen, call
 from funx import *
 import os
-
+from time import sleep
 
 orange = '#F0Af16'
 ored   = '#F77B53'
@@ -16,18 +16,28 @@ violet = '#C76BFA'
 dviolet= '#7A05BE'
 dblue  = '#3A69F0'
 white  = '#FFFFFF'
-dgray  = '#312D2D'
+dgray  = '#a5c2c5'
 gray   = '#D0D0D0'
 red    = '#C61717'
 dred   = '#6b1015'
 solar  = '#fdf6e3'   
 gray_orange='#E6D69B'
+light_orange = '#F0C674'
+dimmed = '#707880'
 
 mod = "mod1"
 sup = "mod4"
 terminal = "alacritty -e nvim -c term -c 'set ma' -c startinsert"
 dmenu = "dmenu_run -sb '" + gray_orange + "' -nf '" + gray_orange + "' -sf '" + red + "'"
 iconPath = '~/.config/qtile/icons/'
+
+network_devices={
+        'ethernet'  : 'I',
+        'wireless'  : 'H',
+        'None'      : 'J',
+        }
+
+target = [0, 0,0,0]
 
 @hook.subscribe.startup_once
 def autostart():
@@ -48,9 +58,20 @@ def func(new_window):
 
         new_window.cmd_static(screen=0)
 
-    _id = str(new_window.info()['id'])
+    elif new_window.name == 'whiteout':
+        new_window.cmd_toggle_floating()
+        new_window.cmd_set_size_floating(1000,1000)
+        new_window.cmd_static(screen=0)
+
+    elif new_window.name == 'blacktest':
+        target[0:2] = new_window.cmd_get_size()
+        qtile.widgets_map['debug'].update(str(target))
+        #Popen('~/Documents/kododawanie/projects/whiteout/whiteout', shell=True)
+
+
+    #_id = str(new_window.info()['id'])
     #Popen('echo ' + str(a) + ' > ~/temp', shell=True)
-    Popen('getxicon -w ' + _id + ' ' + iconPath + _id, shell=True)
+    #Popen('getxicon -w ' + _id + ' ' + iconPath + _id, shell=True)
 
 @hook.subscribe.client_killed
 def killed(zombie):
@@ -66,8 +87,10 @@ keys = [
     Key([sup], 'b', lazy.spawn('brave')),
     Key([mod], 'p', lazy.spawn(dmenu)),
     Key([sup], 'f', lazy.spawn('pcmanfm')),
-    Key([sup], 'm', lazy.spawn('urxvt -e htop')),
+    Key([mod], 'e', lazy.to_screen(0)),
+    Key([mod], 'w', lazy.to_screen(1)),   Key([sup], 'm', lazy.spawn('urxvt -e htop')),
     Key([sup], 'bracketleft', lazy.spawn('Straw')),
+
     Key([], 'XF86AudioRaiseVolume', lazy.function(volumechange(True))),
     Key([], 'XF86AudioLowerVolume', lazy.function(volumechange(False))),
     Key([], 'XF86AudioMute', lazy.function(volumemute)),
@@ -154,7 +177,6 @@ float_layout = layout.Floating(
         *layout.Floating.default_float_rules,
         Match(wm_class = 'Straw'),
         Match(wm_class = 'feh'),
-        Match(wm_class = 'python -B main.py'),
     ]
 )
 
@@ -218,34 +240,46 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+def network_current():
+    st = check_output("nmcli -t connection show --active | awk -F ':' '{print $1 " + '"\\n"' + " $(NF-1)}'", shell=True, encoding='utf-8').split('\n')[:-1]
+    st.append('None')
+    st.append('None')
+
+    current_net_dev = network_devices[st[1].split('-')[-1]]
+    return current_net_dev
+
+bar_background = '#282A2E'
+bar_foreground = light_orange
 screens = [
     Screen(
         wallpaper='~/Pictures/wallpaper/solar_comma_light.png',
         wallpaper_mode='fill',
         top=bar.Bar(
-            background='#29271c',
+            background=bar_background,
             widgets=[
                 widget.TextBox(
-                    text='CA',
+                    text='C',
                     font='Bartek',
                     fontsize=31,
                     foreground=gray_orange,
                 ),
 
                 widget.GroupBox(
-                    font='Roboto Mono',
-                    active=black,
-                    inactive=black,
-                    background=gray_orange,
-                    this_current_screen_border=black,
+                    font='JetBrains Mono',
+                    active=gray,
+                    inactive=dimmed,
+                    background=bar_background,
+                    foreground = bar_background,
+                    this_current_screen_border=bar_foreground,
                     this_screen_border=green,
                     highlight_method='block',
-                    block_highlight_text_color=gray_orange,
+                    block_highlight_text_color=bar_background,
+                    highlight_color=bar_background,
 
                 ),
 
                 widget.TextBox(
-                    text='BA',
+                    text='A',
                     font='Bartek',
                     fontsize=31,
                     foreground=gray_orange,
@@ -267,66 +301,65 @@ screens = [
                 ),
 
                 widget.TextBox(
-                    text='BA',
-                    font='Bartek',
-                    fontsize=31,
-                    foreground=gray_orange,
-                ),
-
-                widget.TextBox(
-                    name = 'chicken_legs',
-                    text = '65kg',
-                    foreground=black,
-                    background=gray_orange,
-                ),
-
-                widget.TextBox(
                     text='B',
                     font='Bartek',
                     fontsize=31,
                     foreground=gray_orange,
                 ),
 
+
                 widget.Spacer(
                     length=3,
                 ),
 
                 widget.TaskList(
-                    parse_text=remtext, 
+                    #parse_text=remtext, 
+                    parse_text = lambda text: ' ' + text + ' ',
                     borderwidth=0, 
                     margin_x=0, 
                     margin_y=0, 
                     icon_size=18, 
-                    txt_floating=''
+                    txt_floating='',
+                    font='JetBrains Mono',
+                    #background = dimmed,
                 ),
 
                 widget.Spacer(
-                    length=bar.STRETCH,
+                    length=45,
+                ),
+                widget.Prompt(
+                    font = 'JetBrains Mono',
                 ),
 
                 widget.Systray(),
                 widget.StatusNotifier(),
 
-                widget.TextBox(
-                    text = 'A',
+                widget.GenPollText(
+                    func = network_current,
+                    name = 'network_device1',
+                    fontsize = 22,
                     font = 'Bartek',
-                    fontsize= 31,
-                    foreground = gray_orange,
+                    background = bar_background,
+                    foreground = gray,
+                    interval = 2,
+                    mouse_callbacks={'Button1' : lazy.spawn('Straw')},
                 ),
+
+                widget.Spacer(14),
 
                 widget.TextBox(
                     text = ' ',
                     name = 'AudioDeviceIndicator1',
-                    foreground = black,
-                    background = gray_orange,
+                    foreground = gray,
+                    background = bar_background,
                     font='JetBrains Mono',
                 ),
 
                 widget.TextBox(
                     name = 'vol_level1',
                     text=vol1()[0],
-                    foreground=red,
-                    background=gray_orange,
+                    foreground=bar_foreground,
+                    background=bar_background,
                     font = 'Ubuntu Bold',
                     fontsize=12,
                 ),
@@ -337,53 +370,64 @@ screens = [
                     font = 'Ubuntu Bold',
                     fontsize=12,
                     func = vol2,
-                    foreground=black,
-                    background=gray_orange,
+                    foreground=gray,
+                    background=bar_background,
                 ),
 
                 widget.TextBox(
                     text='(',
-                    foreground=black,
-                    background=gray_orange,
+                    foreground=bar_foreground,
+                    background=bar_background,
                 ),
 
                 widget.TextBox(
                     name='vol_number1',
                     text = vol1()[1]+'%',
-                    foreground=black,
-                    background=gray_orange,
+                    foreground=gray,
+                    background=bar_background,
                 ),
 
                 widget.TextBox(
                     text=')',
-                    foreground=black,
-                    background=gray_orange,
+                    foreground=bar_foreground,
+                    background=bar_background,
                 ),
-                widget.TextBox(
-                    text = 'BA',
-                    font = 'Bartek',
-                    fontsize= 31,
-                    foreground = gray_orange,
-                ),
+
+                widget.Spacer(14),
 
                 widget.TextBox(
                     text=' ',
                     font = 'JetBrains Mono',
-                    foreground=black,
-                    background=gray_orange,
+                    foreground=bar_foreground,
+                    background=bar_background,
                 ),
 
                 widget.Battery(
-                    foreground=black, 
-                    background=gray_orange,
+                    foreground=gray, 
+                    background=bar_background,
                     format='{char}{percent:2.0%} {hour:d}:{min:02d}', 
                     charge_char='',
                     discharge_char='' ,
                     update_interval=2
                 ),
 
+                widget.Spacer(15),
+
                 widget.TextBox(
-                    text = 'BA',
+                    text=' ',
+                    font = 'JetBrains Mono',
+                    foreground = gray,
+                    background = bar_background,
+                ),
+                widget.GenPollText(
+                    func = temp,
+                    update_interval = 1000,
+                    foreground = bar_foreground,
+                    background = bar_background,
+                ),
+
+                widget.TextBox(
+                    text = 'A',
                     font = 'Bartek',
                     fontsize= 31,
                     foreground = gray_orange,
@@ -424,25 +468,6 @@ screens = [
                 ),
 
                 widget.TextBox(
-                    text = 'BA',
-                    font = 'Bartek',
-                    fontsize= 31,
-                    foreground = gray_orange,
-                ),
-                widget.TextBox(
-                    text=' ',
-                    font = 'JetBrains Mono',
-                    foreground = black,
-                    background = gray_orange,
-                ),
-                widget.GenPollText(
-                    func = temp,
-                    update_interval = 1000,
-                    foreground = black,
-                    background = gray_orange,
-                ),
-
-                widget.TextBox(
                     text = 'B',
                     font = 'Bartek',
                     fontsize= 31,
@@ -451,6 +476,39 @@ screens = [
 
         ],
         size=18)
+    ),
+    Screen(
+        wallpaper='~/Pictures/wallpaper/solar_comma_light.png',
+        wallpaper_mode='fill',
+        top=bar.Bar(
+            background='#29271c',
+            widgets=[
+                widget.TextBox(
+                    text='CA',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
+                widget.GroupBox(
+                    font='Roboto Mono',
+                    active=black,
+                    inactive=black,
+                    background=gray_orange,
+                    this_current_screen_border=black,
+                    this_screen_border=green,
+                    highlight_method='block',
+                    block_highlight_text_color=gray_orange,
+                ),
+
+                widget.TextBox(
+                    text='B',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
+            ],
+            size=18,
+        ),
     ),
 ]
 

@@ -24,7 +24,7 @@ set tabstop=4
 set shiftwidth=4
 set si
 set noshowmode
-set guicursor=i:hor15-Cursor
+set guicursor=n:blinkon100,i:hor15-blinkon100
 inoremap { {}<Left>
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {{ {
@@ -32,6 +32,8 @@ inoremap {} {}
 set backup
 set undofile
 set ignorecase
+
+set scrollback=1000
 
 set undodir=/home/mcnuggetsx20/Documents/vimfiles/undo
 set backupdir=/home/mcnuggetsx20/Documents/vimfiles/backup
@@ -61,10 +63,11 @@ set statusline+=\ %{wordcount().words}\ words
 
 set statusline+=%#function#
 set statusline+=\ [NVIM]
+
 function! s:ExecuteInShell(command)
   let command = join(map(split(a:command), 'expand(v:val)'))
   let winnr = bufwinnr('^' . command . '$')
-  silent! execute  winnr < 0 ? 'botright vnew ' . fnameescape(command) : winnr . 'wincmd w'
+  silent! execute  winnr < 0 ? 'botright 50 vnew ' . fnameescape(command) : winnr . 'wincmd w'
   setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
   echo 'Execute ' . command . '...'
   silent! execute 'silent %!'. command
@@ -76,12 +79,23 @@ function! s:ExecuteInShell(command)
 endfunction
 command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
 
+" Open multiple tabs at once
+fun! OpenMultipleTabs(pattern_list)
+    for p in a:pattern_list
+        for c in glob(l:p, 0, 1)
+            execute 'tabnew ' . l:c
+        endfor
+    endfor
+endfun
+
+command! -bar -bang -nargs=+ -complete=file Tabsnew call OpenMultipleTabs([<f-args>])
+
 
 autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
 :autocmd BufNewFile *.cpp 0r /home/mcnuggetsx20/.config/ClassicTemplate.txt
 nnoremap <F5> :w <bar> !brave % & <cr> 
 nnoremap <F4> :w <bar> Shell python -B % <cr>
-command WW silent! :w !sudo tee % <CR>
+command WW silent! :w !sudo tee %
 
 nnoremap x "_x
 vmap x "_d
@@ -113,13 +127,17 @@ Plug 'hrsh7th/nvim-compe'
 Plug 'ayu-theme/ayu-vim' " or other package manager
 Plug 'blueshirts/darcula'
 Plug 'lifepillar/vim-solarized8'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'nvim-treesitter/nvim-treesitter'
 
 call plug#end()
 
 set termguicolors
-let ayucolor="light"
-colorscheme ayu
+set background=light
+"let ayucolor="light"
+"colorscheme ayu
 colorscheme solarized8_high
+"colorscheme PaperColor
 
 lua << EOF
     require('lspconfig').pyright.setup{
