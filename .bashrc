@@ -17,9 +17,9 @@ PS1="[\W]${GREEN}$ ${RESET}"
 alias qconf='nv ~/.config/qtile/config.py'
 alias l='exa --group-directories-first --icons -lagBh'
 alias pacinstall='sudo pacman -S'
-alias pacclear='sudo pacman -Scc'
+alias pacclear='echo y | sudo pacman -Scc; sudo pacman -Scc --noconfirm'
 alias pacremove='sudo pacman -Rns'
-alias pacupgrade='sudo pacman -Syyu; sudo pacman -Scc'
+alias pacupgrade='sudo pacman -Syyu; pacclear'
 alias pacrefresh='sudo pacman -Syy'
 alias oi='cd ~/documents/programming/oi_2021/'
 alias term='vim ~/.config/alacritty/alacritty.yml'
@@ -29,6 +29,12 @@ alias cd='nvim_autocd'
 #alias nv='internal_nvim'
 alias take='_take'
 alias ogmake='cd /home/minecraft; sudo java -Xmx4096M -Xms4096M -jar server.jar -nogui'
+alias telewizor='xrandr --newmode "1360x768_60.00"   84.75  1366 1431 1567 1776  768 771 781 798 -hsync +vsync; xrandr --addmode VGA1 1360x768_60.00; xrandr --output VGA1 --mode 1360x768_60.00'
+alias praca='xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync; xrandr --addmode DP1 1920x1080_60.00; xrandr --output DP1 --mode 1920x1080_60.00'
+alias screenoff='sudo vbetool dpms off'
+alias screenon='sudo vbetool dpms on'
+alias speed='xset r rate 200 90'
+alias battery='cat /sys/class/power_supply/BAT0/capacity'
 
 bind "set completion-ignore-case on"
 
@@ -64,6 +70,14 @@ openLid(){
 
 niezle(){
     echo nvim_client_python -p \"$@\"
+}
+
+aur(){
+    cd /home/mcnuggetsx20/program-files/
+    rm -rf $1
+    git clone https://aur.archlinux.org/$1.git
+    cd $1
+    makepkg -si
 }
 
 

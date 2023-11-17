@@ -90,6 +90,7 @@ autocmd VimEnter * :silent exec "!kill -s SIGWINCH $PPID"
 :autocmd BufNewFile *.cpp 0r /home/mcnuggetsx20/.config/ClassicTemplate.txt
 nnoremap <F5> :w <bar> !brave % & <cr> 
 nnoremap <F4> :w <bar> Shell python -B % <cr>
+nnoremap <F3> :w <bar> Shell javac % && java % <cr>
 command WW silent! :w !sudo tee %
 autocmd BufEnter * silent! lcd %:p:h
 
@@ -119,12 +120,15 @@ augroup END
 call plug#begin()
 
 Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'hrsh7th/nvim-compe'
 Plug 'ayu-theme/ayu-vim' " or other package manager
 Plug 'blueshirts/darcula'
 Plug 'lifepillar/vim-solarized8'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
@@ -136,6 +140,7 @@ colorscheme solarized8_high
 "colorscheme PaperColor
 
 lua << EOF
+    local servers = {'pyright', 'jdtls'}
     require('lspconfig').pyright.setup{
     handlers = {
             ['textDocument/publishDiagnostics'] = function(...) end
@@ -149,6 +154,12 @@ lua << EOF
           }
         }
       }
+    }
+    require('lspconfig').jdtls.setup{
+        on_attach = on_attach,
+        flags = {
+            debounce_text_changes = 150,
+        }
     }
 EOF
 

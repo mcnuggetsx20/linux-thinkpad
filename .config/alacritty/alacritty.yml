@@ -3,26 +3,26 @@ window:
 
 font:
   normal:
-    family: JetBrains Mono 
-    style: Regular
+    family: Fixed (OTB) 
+    style: SemiCondensed
 
   bold:
-    family: JetBrains Mono
+    family: Fixed (OTB)
     style: Bold
 
   italic:
-    family: JetBrains Mono
+    family: Fixed (OTB)
     style: Italic
 
   bold_italic:
-    family: JetBrains Mono
+    family: Fixed (OTB)
     style: Bold Italic
 
   offset:
     x: 0
     y: 0
 
-  size: 8
+  size: 8.5
 key_bindings:
   - {key: Equals, mods: Control, action: IncreaseFontSize}
   - {key: Minus, mods: Control, action: DecreaseFontSize}

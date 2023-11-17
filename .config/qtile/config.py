@@ -84,7 +84,7 @@ def temp():
 
 keys = [
     #My stuff
-    Key([sup], 'b', lazy.spawn('brave')),
+    Key([sup], 'b', lazy.spawn('brave --password-store=basic')),
     Key([mod], 'p', lazy.spawn(dmenu)),
     Key([sup], 'f', lazy.spawn('pcmanfm')),
     Key([mod], 'e', lazy.to_screen(0)),
@@ -94,10 +94,10 @@ keys = [
     Key([], 'XF86AudioRaiseVolume', lazy.function(volumechange(True))),
     Key([], 'XF86AudioLowerVolume', lazy.function(volumechange(False))),
     Key([], 'XF86AudioMute', lazy.function(volumemute)),
-    Key([mod, 'shift'], 's', lazy.spawn('sh /usr/bin/screenshot')),
+    Key([mod, 'shift'], 's', lazy.spawn('/usr/bin/screenshot -s')),
+    Key([], 'Print', lazy.spawn('/usr/bin/screenshot -m 0')),
     Key([sup], 'q', lazy.spawn('sh power_menu')),
     Key([sup], 'p', lazy.spawn('feh /home/mcnuggetsx20/Pictures/plan_lekcji.png')),
-    Key([mod, 'shift'], 's', lazy.spawn('sh /usr/bin/screenshot')),
     Key([],    'XF86MonBrightnessUp', lazy.spawn('xbacklight -inc 5')),
     Key([],    'XF86MonBrightnessDown', lazy.spawn('xbacklight -dec 5')), 
     Key([mod], 't', lazy.window.toggle_floating()),
@@ -160,7 +160,8 @@ all_layouts = [
         single_border_width=0,
         new_client_position='before_current', 
         change_ratio=0.025,
-        margin=12,
+        margin=15,
+        single_margin = [10, 20, 10, 20],
     ),
 
     layout.Max(
@@ -203,9 +204,6 @@ groups = [
         name='4',
         position=4, 
         layouts=all_layouts, 
-        matches = [
-            Match(wm_class='discord')
-        ]
     ),
         
     Group(
@@ -213,7 +211,9 @@ groups = [
         position=5, 
         layouts=[float_layout], 
         matches = [
-            Match(wm_class='teams')
+            Match(wm_class='teams'),
+            Match(wm_class='riotclientux.exe'),
+            Match(wm_class='discord')
         ]
     ),
 ]
@@ -252,7 +252,7 @@ bar_background = '#282A2E'
 bar_foreground = light_orange
 screens = [
     Screen(
-        wallpaper='~/Pictures/wallpaper/solar_comma_light.png',
+        wallpaper='~/Pictures/wallpaper/matrix.jpeg',
         wallpaper_mode='fill',
         top=bar.Bar(
             background=bar_background,
@@ -484,20 +484,46 @@ screens = [
             background='#29271c',
             widgets=[
                 widget.TextBox(
-                    text='CA',
+                    text='C',
                     font='Bartek',
                     fontsize=31,
                     foreground=gray_orange,
                 ),
+
                 widget.GroupBox(
-                    font='Roboto Mono',
-                    active=black,
-                    inactive=black,
-                    background=gray_orange,
-                    this_current_screen_border=black,
+                    font='JetBrains Mono',
+                    active=gray,
+                    inactive=dimmed,
+                    background=bar_background,
+                    foreground = bar_background,
+                    this_current_screen_border=bar_foreground,
                     this_screen_border=green,
                     highlight_method='block',
-                    block_highlight_text_color=gray_orange,
+                    block_highlight_text_color=bar_background,
+                    highlight_color=bar_background,
+
+                ),
+
+                widget.TextBox(
+                    text='A',
+                    font='Bartek',
+                    fontsize=31,
+                    foreground=gray_orange,
+                ),
+
+                widget.TextBox(
+                    text=' ',
+                    font='JetBrains Mono',
+                    foreground=black,
+                    background = gray_orange,
+                ),
+
+                widget.GenPollText(
+                    name='disk',
+                    foreground=black,
+                    background=gray_orange,
+                    func=space_check, 
+                    update_interval=4,
                 ),
 
                 widget.TextBox(
@@ -506,7 +532,174 @@ screens = [
                     fontsize=31,
                     foreground=gray_orange,
                 ),
-            ],
+
+
+                widget.Spacer(
+                    length=3,
+                ),
+
+                widget.TaskList(
+                    #parse_text=remtext, 
+                    parse_text = lambda text: ' ' + text + ' ',
+                    borderwidth=0, 
+                    margin_x=0, 
+                    margin_y=0, 
+                    icon_size=18, 
+                    txt_floating='',
+                    font='JetBrains Mono',
+                    #background = dimmed,
+                ),
+
+                widget.Spacer(
+                    length=45,
+                ),
+                widget.Prompt(
+                    font = 'JetBrains Mono',
+                ),
+
+                widget.StatusNotifier(),
+
+                widget.GenPollText(
+                    func = network_current,
+                    name = 'network_device1',
+                    fontsize = 22,
+                    font = 'Bartek',
+                    background = bar_background,
+                    foreground = gray,
+                    interval = 2,
+                    mouse_callbacks={'Button1' : lazy.spawn('Straw')},
+                ),
+
+                widget.Spacer(14),
+
+                widget.TextBox(
+                    text = ' ',
+                    name = 'AudioDeviceIndicator1',
+                    foreground = gray,
+                    background = bar_background,
+                    font='JetBrains Mono',
+                ),
+
+                widget.TextBox(
+                    name = 'vol_level1',
+                    text=vol1()[0],
+                    foreground=bar_foreground,
+                    background=bar_background,
+                    font = 'Ubuntu Bold',
+                    fontsize=12,
+                ),
+
+                widget.TextBox(
+                    name = 'vol_rest1',
+                    text=vol2(),
+                    font = 'Ubuntu Bold',
+                    fontsize=12,
+                    func = vol2,
+                    foreground=gray,
+                    background=bar_background,
+                ),
+
+                widget.TextBox(
+                    text='(',
+                    foreground=bar_foreground,
+                    background=bar_background,
+                ),
+
+                widget.TextBox(
+                    name='vol_number1',
+                    text = vol1()[1]+'%',
+                    foreground=gray,
+                    background=bar_background,
+                ),
+
+                widget.TextBox(
+                    text=')',
+                    foreground=bar_foreground,
+                    background=bar_background,
+                ),
+
+                widget.Spacer(14),
+
+                widget.TextBox(
+                    text=' ',
+                    font = 'JetBrains Mono',
+                    foreground=bar_foreground,
+                    background=bar_background,
+                ),
+
+                widget.Battery(
+                    foreground=gray, 
+                    background=bar_background,
+                    format='{char}{percent:2.0%} {hour:d}:{min:02d}', 
+                    charge_char='',
+                    discharge_char='' ,
+                    update_interval=2
+                ),
+
+                widget.Spacer(15),
+
+                widget.TextBox(
+                    text=' ',
+                    font = 'JetBrains Mono',
+                    foreground = gray,
+                    background = bar_background,
+                ),
+                widget.GenPollText(
+                    func = temp,
+                    update_interval = 1000,
+                    foreground = bar_foreground,
+                    background = bar_background,
+                ),
+
+                widget.TextBox(
+                    text = 'A',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+                widget.TextBox(
+                    text = ' ',
+                    font = 'JetBrains Mono',
+                    foreground = black,
+                    background = gray_orange,
+                ),
+
+                widget.Clock(
+                    foreground=black,
+                    background=gray_orange,
+                    format="%H:%M:%S",
+                    update_interval=1,
+                ),
+
+                widget.TextBox(
+                    text = 'BA',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+                widget.TextBox(
+                    text = ' ',
+                    font = 'JetBrains Mono',
+                    foreground = black,
+                    background = gray_orange,
+                ),
+
+                widget.Clock(
+                    foreground=black,
+                    background=gray_orange,
+                    format="%a: %d.%m.'%y",
+                ),
+
+                widget.TextBox(
+                    text = 'B',
+                    font = 'Bartek',
+                    fontsize= 31,
+                    foreground = gray_orange,
+                ),
+
+        ],
             size=18,
         ),
     ),
@@ -534,5 +727,5 @@ reconfigure_screens = True
 # focus, should we respect this or not?
 auto_minimize = False
 
-wmname = "QTile"
+wmname = "L3GD"
 
