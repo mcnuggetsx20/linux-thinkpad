@@ -4,8 +4,7 @@ DEST=/home/mcnuggetsx20/Documents/repos/linux-thinkpad
 USR=/home/mcnuggetsx20
 DATE=$(date "+%d %b %Y %H:%M:%S")
 
-cp /bin/configpush ${DEST}/bin/
-cp /bin/nvim_client_python ${DEST}/bin/
+cp /home/mcnuggetsx20/bin/* ${DEST}/bin/
 cp -r ${USR}/.config/qtile ${DEST}/.config
 cp -r ${USR}/.config/alacritty ${DEST}/.config
 cp -r ${USR}/.config/nvim ${DEST}/.config
