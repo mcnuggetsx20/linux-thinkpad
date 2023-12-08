@@ -19,7 +19,7 @@ alias l='exa --group-directories-first --icons -lagBh'
 alias pacinstall='sudo pacman -S'
 alias pacclear='echo y | sudo pacman -Scc; sudo pacman -Scc --noconfirm'
 alias pacremove='sudo pacman -Rns'
-alias pacupgrade='sudo pacman -Syyu; pacclear'
+alias pacupgrade='configpush; sudo pacman -Syyu --noconfirm; sudo pacman -Scc --noconfirm; echo y | sudo pacman -Scc; echo; speed'
 alias pacrefresh='sudo pacman -Syy'
 alias oi='cd ~/documents/programming/oi_2021/'
 alias term='vim ~/.config/alacritty/alacritty.yml'
@@ -37,6 +37,13 @@ alias speed='xset r rate 200 90'
 alias battery='cat /sys/class/power_supply/BAT0/capacity'
 
 bind "set completion-ignore-case on"
+
+function gitpush(){
+    DATE=$(date "+%d %b %Y %H:%M:%S")
+    git add -A
+    git commit -m "${DATE}"
+    git push
+}
 
 function evim (){
     urxvt -e vim $1 &
