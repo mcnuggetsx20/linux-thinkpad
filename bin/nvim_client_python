@@ -18,6 +18,7 @@ def main():
     if args.change_dir:
         curr = os.environ['PWD']
         nvim.command('lcd ' + curr)
+        nvim.command(f'lcd {curr} | silent')
     
     if args.open:
         for i in args.open:
