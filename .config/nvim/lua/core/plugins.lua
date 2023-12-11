@@ -21,6 +21,7 @@ return require('packer').startup(function(use)
         'blueshirts/darcula',
         'lifepillar/vim-solarized8',
         'NLKNguyen/papercolor-theme',
+        'Abstract-IDE/Abstract-cs',
     }
 
     -- lsp
