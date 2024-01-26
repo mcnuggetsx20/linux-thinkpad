@@ -39,6 +39,10 @@ alias battery='cat /sys/class/power_supply/BAT0/capacity'
 
 bind "set completion-ignore-case on"
 
+function mouse_sens(){
+    xinput --set-prop $1 "Coordinate Transformation Matrix" $2 0 0 0 $2 0 0 0 1 
+}
+
 function gitpush(){
     DATE=$(date "+%d %b %Y %H:%M:%S")
     git add -A
