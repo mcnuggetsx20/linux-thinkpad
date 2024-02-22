@@ -37,6 +37,8 @@ alias screenon='sudo vbetool dpms on'
 alias speed='xset r rate 200 90'
 alias battery='cat /sys/class/power_supply/BAT0/capacity'
 
+alias janek_tv='xrandr --output VGA1 --mode 1920x1080 --rate 60 --left-of LVDS1'
+
 bind "set completion-ignore-case on"
 
 function mouse_sens(){
