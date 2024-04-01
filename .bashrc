@@ -36,6 +36,7 @@ alias screenoff='sudo vbetool dpms off'
 alias screenon='sudo vbetool dpms on'
 alias speed='xset r rate 200 90'
 alias battery='cat /sys/class/power_supply/BAT0/capacity'
+alias tv='xrandr --output HDMI3 --mode 1920x1080 --rate 60 --left-of LVDS1'
 
 alias janek_tv='xrandr --output HDMI3 --mode 1920x1080 --rate 60 --dpi 96 --left-of LVDS1'
 
